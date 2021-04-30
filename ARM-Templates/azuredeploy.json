@@ -19,7 +19,7 @@
             "type": "String"
         },
         "Branch": {
-            "defaultValue": "update/AlsId-solution",
+            "defaultValue": "main",
             "type": "String"
         },
         "roleGuid": {

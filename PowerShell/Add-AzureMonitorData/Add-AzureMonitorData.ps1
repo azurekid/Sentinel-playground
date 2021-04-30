@@ -157,8 +157,8 @@ function pathBuilder {
     $uriArray = $_path.Split("/")
     $gitOwner = $uriArray[3]
     $gitRepo = $uriArray[4]
-    $gitPath = $uriArray[-2]
-    $solution = $uriArray[-1]
+    $gitPath = $uriArray[7]
+    $solution = $uriArray[8]
 
     $apiUri = "https://api.github.com/repos/$gitOwner/$gitRepo/contents/$gitPath/$solution"
 
@@ -176,7 +176,6 @@ function processResponse {
     foreach ($responseObject in $responseBody) {
         if ($responseObject.type -eq 'dir') {
             $responseObject = (Invoke-WebRequest (PathBuilder -uri $responseObject.html_url)).Content | ConvertFrom-Json
-            Write-Output "URI Path: $_path"
             Write-Output $responseObject
         }
 
