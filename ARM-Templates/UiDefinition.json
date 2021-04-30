@@ -104,6 +104,10 @@
                                     "value": "AkamaiSIEMEvent"
                                 },
                                 {
+                                    "label": "lsid for Active Directory (Preview)",
+                                    "value": "Alsid"
+                                },
+                                {
                                     "label": "Aruba ClearPass (Preview)",
                                     "value": "ArubaClearPass"
                                 },
