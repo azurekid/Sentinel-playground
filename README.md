@@ -4,7 +4,7 @@
 [![Maintenance](https://img.shields.io/maintenance/yes/2021.svg?style=flat-square)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSecureHats%2FSentinel-playground%2Fmain%2FARM-Templates%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FSecureHats%2FSentinel-playground%2Fmain%2FARM-Templates%2FUiDefinition.json)
+[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fazurekid%2FSentinel-playground%2Fmain%2FARM-Templates%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fazurekid%2FSentinel-playground%2Fmain%2FARM-Templates%2FUiDefinition.json)
 # Sentinel Playground
 
 The Sentinel playground is a project to deploy an initial Azure Sentinel environment pre-provisioned with sample data. 
@@ -16,26 +16,26 @@ This to speed up the deployment for Proof of Concept and demo scenarios.
 
 The following table summarizes permissions, licenses needed and cost to enable each Data Connector:
 
-| Provider   | Connector                                             | Custom Table                    | Parser | Tested  |
-| ---------- | ----------------------------------------------------- | ------------------------------- | ------ | ------- |
-| Agari      | Agari Phishing Defense and Brand Protection (Preview) | agari_apdpolicy_log_CL          |  [ ]   |   [ ]   |
-| Agari      |                                                       | agari_apdtc_log_CL              |  [ ]   |   [ ]   |
-| Agari      |                                                       | agari_bpalerts_log_CL           |  [ ]   |   [ ]   |
-| Akamai     | Akamai Security Events (Preview)                      | SecureHats_CL                   |  [X]   |   [X]   |
-| Aruba      | Aruba ClearPass (Preview)                             | SecureHats_CL                   |  [ ]   |   [X]   |
-| Cisco      | Cisco ISE Event                                       | SecureHats_CL                   |  [ ]   |   [X]   |
-| Cisco      | Cisco Meraki (Preview)                                | SecureHats_CL                   |  [ ]   |   [X]   |
-| Cisco      | Cisco UCS (Preview)                                   | SecureHats_CL                   |  [ ]   |   [X]   |
-| Cisco      | Cisco Umbrella (Preview)                              | Cisco_Umbrella_cloudfirewall_CL |  [X]   |   [X]   |
-|            |                                                       | Cisco_Umbrella_dns_CL           |  [X]   |   [ ]   |
-|            |                                                       | Cisco_Umbrella_ip_CL            |  [X]   |   [ ]   |
-|            |                                                       | Cisco_Umbrella_proxy_CL         |  [X]   |   [ ]   |
-| Qualys     | Qualys VM KnowledgeBase (Preview)                     | QualysKB_CL                     |  [X]   |   [X]   |
-| Qualys     | Qualys Vulnerability Management (Preview)             | QualysHostDetection_CL          |  [X]   |   [ ]   |
-| Symantec   | Broadcom Symantec DLP (Preview)                       | SecureHats_CL                   |  [X]   |   [X]   |
-| Symantec   | Symantec ProxySG (Preview)                            | SecureHats_CL                   |  [X]   |   [x]   |
-| Symantec   | Symantec VIP (Preview)                                | SecureHats_CL                   |  [X]   |   [x]   |
-
+| Provider   | Connector                                             | Custom Table                    | Parser | Workbook | Tested  |
+| ---------- | ----------------------------------------------------- | ------------------------------- | ------ | -------- | ------- |
+| AlsAd      | Alsid for Active Directory (Preview)                  | AlsidForADLog_CL                | - [x]  |  - [x]   | - [ ]   |
+| Agari      | Agari Phishing Defense and Brand Protection (Preview) | agari_apdpolicy_log_CL          | - [ ]  |  - [ ]   | - [ ]   |
+| Agari      |                                                       | agari_apdtc_log_CL              | - [ ]  |  - [ ]   | - [ ]   |
+| Agari      |                                                       | agari_bpalerts_log_CL           | - [ ]  |  - [ ]   | - [ ]   |
+| Akamai     | Akamai Security Events (Preview)                      | SecureHats_CL                   | - [x]  |  - [ ]   | - [ ]   |
+| Aruba      | Aruba ClearPass (Preview)                             | SecureHats_CL                   | - [ ]  |  - [ ]   | - [ ]   |
+| Cisco      | Cisco ISE Event                                       | SecureHats_CL                   | - [ ]  |  - [ ]   | - [ ]   |
+| Cisco      | Cisco Meraki (Preview)                                | SecureHats_CL                   | - [ ]  |  - [ ]   | - [ ]   |
+| Cisco      | Cisco UCS (Preview)                                   | SecureHats_CL                   | - [ ]  |  - [ ]   | - [ ]   |
+| Cisco      | Cisco Umbrella (Preview)                              | Cisco_Umbrella_cloudfirewall_CL | - [x]  |  - [ ]   | - [ ]   |
+|            |                                                       | Cisco_Umbrella_dns_CL           | - [x]  |  - [ ]   | - [ ]   |
+|            |                                                       | Cisco_Umbrella_ip_CL            | - [x]  |  - [ ]   | - [ ]   |
+|            |                                                       | Cisco_Umbrella_proxy_CL         | - [x]  |  - [ ]   | - [ ]   |
+| Qualys     | Qualys VM KnowledgeBase (Preview)                     | QualysKB_CL                     | - [x]  |  - [ ]   | - [ ]   |
+| Qualys     | Qualys Vulnerability Management (Preview)             | QualysHostDetection_CL          | - [x]  |  - [ ]   | - [ ]   |
+| Symantec   | Broadcom Symantec DLP (Preview)                       | SecureHats_CL                   | - [x]  |  - [ ]   | - [ ]   |
+| Symantec   | Symantec ProxySG (Preview)                            | SecureHats_CL                   | - [x]  |  - [ ]   | - [ ]   |
+| Symantec   | Symantec VIP (Preview)                                | SecureHats_CL                   | - [x]  |  - [ ]   | - [ ]   |
 
 ## ARM template instructions
 
