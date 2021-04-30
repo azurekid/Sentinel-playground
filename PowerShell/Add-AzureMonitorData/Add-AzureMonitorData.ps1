@@ -176,6 +176,7 @@ function processResponse {
     foreach ($responseObject in $responseBody) {
         if ($responseObject.type -eq 'dir') {
             $responseObject = (Invoke-WebRequest (PathBuilder -uri $responseObject.html_url)).Content | ConvertFrom-Json
+            Write-Output "URI Path: $_path"
             Write-Output $responseObject
         }
 
