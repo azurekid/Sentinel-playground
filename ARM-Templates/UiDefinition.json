@@ -6,7 +6,7 @@
         "config": {
             "isWizard": true,
             "basics": {
-                "description": "**Azure Sentinel Playground** deployment, see more information about this project [here](https://github.com/SecureHats/Sentinel-playground/).",
+                "description": "**Azure Sentinel Playground** deployment, more information about this project [here](https://github.com/SecureHats/Sentinel-playground/).",
                 "location": {
                     "label": "Location",
                     "toolTip": "Location for all resources",
@@ -104,7 +104,7 @@
                                     "value": "AkamaiSIEMEvent"
                                 },
                                 {
-                                    "label": "lsid for Active Directory (Preview)",
+                                    "label": "Alsid for Active Directory (Preview)",
                                     "value": "Alsid"
                                 },
                                 {
