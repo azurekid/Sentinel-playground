@@ -15,7 +15,11 @@
             }
         },
         "CloudRepo": {
-            "defaultValue": "https://github.com/azurekid/Sentinel-playground/tree/update/AlsId-solution",
+            "defaultValue": "https://github.com/azurekid/Sentinel-playground",
+            "type": "String"
+        },
+        "Branch": {
+            "defaultValue": "update/Alsid-solution",
             "type": "String"
         },
         "roleGuid": {
@@ -111,7 +115,7 @@
             "properties": {
                 "forceUpdateTag": "[parameters('guid')]",
                 "azPowerShellVersion": "5.4",
-                "arguments": "[format(' -WorkspaceName {0} -CustomTableName {1} -repoUri {2} -DataProvidersArray \\\"{3}\\\"', parameters('workspaceName'), parameters('CustomTableName'), concat(parameters('CloudRepo'), '/tree/main/samples/'), parameters('dataProviders'))]",
+                "arguments": "[format(' -WorkspaceName {0} -CustomTableName {1} -repoUri {2} -DataProvidersArray \\\"{3}\\\"', parameters('workspaceName'), parameters('CustomTableName'), concat(parameters('CloudRepo'), '/tree/', parameters('Branch'), '/samples/'), parameters('dataProviders'))]",
                 "primaryScriptUri": "https://raw.githubusercontent.com/SecureHats/Sentinel-playground/main/PowerShell/Add-AzureMonitorData/Add-AzureMonitorData.ps1",
                 "supportingScriptUris": [],
                 "timeout": "PT30M",
@@ -140,7 +144,7 @@
             "properties": {
                 "forceUpdateTag": "[parameters('guid')]",
                 "azPowerShellVersion": "5.4",
-                "arguments": "[format(' -WorkspaceName {0} -CustomTableName {1} -repoUri {2} -DataProvidersArray \\\"{3}\\\"', parameters('workspaceName'), parameters('CustomTableName'), concat(parameters('CloudRepo'), '/tree/main/parsers/'), parameters('dataProviders'))]",
+                "arguments": "[format(' -WorkspaceName {0} -CustomTableName {1} -repoUri {2} -DataProvidersArray \\\"{3}\\\"', parameters('workspaceName'), parameters('CustomTableName'), concat(parameters('CloudRepo'), '/tree', parameters('Branch'), '/parsers/'), parameters('dataProviders'))]",
                 "primaryScriptUri": "https://raw.githubusercontent.com/SecureHats/Sentinel-playground/main/PowerShell/Add-AzureMonitorData/Add-AzureMonitorData.ps1",
                 "supportingScriptUris": [],
                 "timeout": "PT30M",
