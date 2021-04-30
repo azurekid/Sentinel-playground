@@ -1,17 +1,16 @@
-#Check if the Az module is installed, if not install it
-# This will auto install the Az.Accounts module if it is not installed
-#Requires -Module Az.Resources
-
 [CmdletBinding(DefaultParameterSetName = "CloudRepo")]
 param (
     [Parameter(ParameterSetName = "CloudRepo")]
-    [String]$repoUri = "https://github.com/SecureHats/Sentinel-playground/tree/main/parsers",
+    [String]$RepoUri,
 
     [Parameter(ParameterSetName = "LocalRepo")]
-    [String]$repoDirectory,
+    [String]$RepoDirectory,
 
     [Parameter(Mandatory = $true)]
     [String]$WorkspaceName,
+
+    [Parameter(Mandatory = $false)]
+    [Array]$DataProvidersArray,
 
     [Parameter(Mandatory = $false)]
     [String]$subscriptionId,
@@ -20,13 +19,109 @@ param (
     [String]$CustomTableName = 'SecureHats'
 )
 
+function Set-AzMonitorFunction {
+    param (
+        [Parameter(Mandatory = $true)]
+        [String]$resourceGroupName,
+
+        [Parameter(Mandatory = $true)]
+        [String]$displayName,
+
+        [Parameter(Mandatory = $true)]
+        [String]$kqlQuery,
+
+        [Parameter(Mandatory = $false)]
+        [String]$category = 'SecureHats'
+
+    )
+
+    $payload = @{
+        ResourceGroupName    = "$resourceGroupName"
+        ResourceProviderName = 'Microsoft.OperationalInsights'
+        ResourceType         = "workspaces/$($workspace.ResourceName)/savedSearches"
+        ApiVersion           = '2020-08-01'
+        Name                 = "$displayName"
+        Method               = 'DELETE'
+    }
+
+    $query = Invoke-AzRestMethod @payload
+
+    if(-not($existing.StatusCode -eq '200')){
+        New-AzOperationalInsightsSavedSearch `
+            -ResourceGroupName $resourceGroupName `
+            -WorkspaceName $workspace.ResourceName `
+            -SavedSearchId $displayName `
+            -DisplayName $displayName `
+            -Category $category `
+            -Query "$kqlQuery" `
+            -FunctionAlias $displayName
+    }
+}
+
+function pathBuilder {
+    param (
+        [Parameter(Mandatory = $true)]
+        [String]$uri,
+
+        [Parameter(Mandatory = $false)]
+        [String]$provider
+
+    )
+    
+    if ($provider) {
+        if ($uri[-1] -ne '/') {
+            $uri = '{0}{1}' -f $uri, '/'
+        }
+        $_path = '{0}{1}' -f $uri, $provider
+    }
+    else {
+        $_path = $uri
+    }
+
+    $uriArray = $_path.Split("/")
+    $gitOwner = $uriArray[3]
+    $gitRepo  = $uriArray[4]
+    $gitPath  = $uriArray[7]
+    $solution = $uriArray[8]
+
+    $apiUri = "https://api.github.com/repos/$gitOwner/$gitRepo/contents/$gitPath/$solution"
+
+    return $apiUri
+}
+function processResponse {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$resourceGroupName,
+
+        [Parameter(Mandatory = $true)]
+        [object]$responseBody
+    )
+
+    foreach ($responseObject in $responseBody) {
+        if ($responseObject.type -eq 'dir') {
+            $responseObject = (Invoke-WebRequest (PathBuilder -uri $responseObject.html_url)).Content | ConvertFrom-Json
+            Write-Output $responseObject
+            pause
+        }
+    
+        foreach ($fileObject in $responseObject) {
+            if ($fileObject.name -like "*.csl") {
+                $kqlQuery = (Invoke-RestMethod -Method Get -Uri $fileObject.download_url) -replace '<CustomLog>', ($CustomTableName + '_CL')
+                
+                Set-AzMonitorFunction `
+                    -resourceGroupName $resourceGroupName `
+                    -displayName (($fileObject.name) -split "\.")[0] `
+                    -kqlQuery "$($kqlQuery)"
+            }
+            else {
+                Write-Output "Nothing to progress"
+            }       
+        }
+    }
+}
+
 Write-Output "Validating if required module is installed"
 $AzModule = Get-InstalledModule -Name Az -ErrorAction SilentlyContinue
-
-$PSVersionTable
-
-#Write-Output 'Installing Operation Insights module 2.3.0'
-#Install-Module Az.OperationalInsights -RequiredVersion 2.3.0 -Repository PSGallery -Force | Out-Null
 
 if ($null -eq $AzModule) {
     Write-Warning "The Az PowerShell module is not found"
@@ -60,30 +155,8 @@ if ($subscriptionId) {
     }
 }
 
-function Set-AzMonitorFunction {
-    param (
-        [Parameter(Mandatory = $true)]
-        [String]$DisplayName,
-
-        [Parameter(Mandatory = $true)]
-        [String]$KqlQuery,
-
-        [Parameter(Mandatory = $false)]
-        [String]$Category = 'SecureHats'
-
-    )
-
-    New-AzOperationalInsightsSavedSearch `
-        -ResourceGroupName $workspace.ResourceGroupName `
-        -WorkspaceName $workspace.ResourceName `
-        -SavedSearchId (New-Guid).Guid `
-        -DisplayName $DisplayName `
-        -Category $Category `
-        -Query "$KqlQuery" `
-        -FunctionAlias $DisplayName
-}
-
 Write-Output "Retrieving Log Analytics workspace [$($WorkspaceName)]"
+
 $workspace = Get-AzResource `
     -Name "$WorkspaceName" `
     -ResourceType 'Microsoft.OperationalInsights/workspaces'
@@ -93,45 +166,20 @@ if ($null -eq $workspace) {
     break
 }
 
-if ($PSCmdlet.ParameterSetName -eq "CloudRepo") {
-    $uriArray = $repoUri.Split("/")
-    $gitOwner = $uriArray[3]
-    $gitRepo = $uriArray[4]
-    $gitPath = $uriArray[7]
+if ($DataProvidersArray) {
+    $dataProviders = $DataProvidersArray | ConvertFrom-Json
 
-    $apiUri = "https://api.github.com/repos/$gitOwner/$gitRepo/contents/$gitPath"
-
-    $response = (Invoke-WebRequest $apiUri).Content `
-    | ConvertFrom-Json `
-    | Where-Object { $_.Name -notlike "*.*" -and $_.type -eq 'dir' }
-    
-    $parsers = $response `
-    | Where-Object { $_.Name -notlike "*.*" } `
-    | Select-Object Name
-    
-    foreach ($folder in $parsers.Name) {
-        $apiUri = "https://api.github.com/repos/$gitOwner/$gitRepo/contents/$gitPath/$folder"
-        Write-Host "New URL: [$apiUri]"
-        $webResponse = (Invoke-WebRequest $apiUri).Content | ConvertFrom-Json
-        $templateUris = ($webResponse | Where-Object { $_.download_url -like "*.*" }).download_url
+    foreach ($provider in $dataProviders) {
+        Write-Output "Provider: $provider"
+        $returnUri = PathBuilder -uri $RepoUri -provider $provider 
         
-        foreach ($templateUri in $templateUris) {
-            $kqlQuery = (Invoke-RestMethod -Method Get -Uri $templateUri) -replace '<CustomLog>', ($CustomTableName + '_CL')
-        }
-
-        Set-AzMonitorFunction -DisplayName (($webResponse.name) -split "\.")[0] -KqlQuery "$($kqlQuery)"
+        $response = (Invoke-WebRequest $returnUri).Content | ConvertFrom-Json
+        processResponse -resourceGroupName $workspace.ResourceGroupName -responseBody $response
     }
 }
-elseif ($PSCmdlet.ParameterSetName -eq "LocalRepo") {
-    $parsers = @(Get-ChildItem `
-        -Path $repoDirectory `
-        -File `
-        -Recurse `
-        -Include "*.csl", "*.txt")
-
-        foreach ($file in $parsers) {
-            Write-Output "Retrieving content from data file [$file]"
-            $kqlQuery = Get-Content $file.FullName -Raw
-            Set-AzMonitorFunction -DisplayName $file.BaseName -KqlQuery "$($kqlQuery)"
-        }
+else {
+    $returnUri = PathBuilder -uri $RepoUri -provider $provider
+    
+    $response = (Invoke-WebRequest $returnUri).Content | ConvertFrom-Json
+    processResponse -resourceGroupName $workspace.ResourceGroupName -responseBody $response
 }
