@@ -20,8 +20,8 @@ The following table summarizes permissions, licenses needed and cost to enable e
 | ---------- | ----------------------------------------------------- | ------------------------------- | ------ | -------- | ------- |
 | Alsid      | Alsid for Active Directory (Preview)                  | AlsidForADLog_CL                |   [x]  |    [x]   |   [ ]   |
 | Agari      | Agari Phishing Defense and Brand Protection (Preview) | agari_apdpolicy_log_CL          |   [ ]  |    [ ]   |   [ ]   |
-| Agari      |                                                       | agari_apdtc_log_CL              |   [ ]  |    [ ]   |   [ ]   |
-| Agari      |                                                       | agari_bpalerts_log_CL           |   [ ]  |    [ ]   |   [ ]   |
+|            |                                                       | agari_apdtc_log_CL              |   [ ]  |    [ ]   |   [ ]   |
+|            |                                                       | agari_bpalerts_log_CL           |   [ ]  |    [ ]   |   [ ]   |
 | Akamai     | Akamai Security Events (Preview)                      | SecureHats_CL                   |   [x]  |    [ ]   |   [ ]   |
 | Aruba      | Aruba ClearPass (Preview)                             | SecureHats_CL                   |   [ ]  |    [ ]   |   [ ]   |
 | Cisco      | Cisco ISE Event                                       | SecureHats_CL                   |   [ ]  |    [ ]   |   [ ]   |
