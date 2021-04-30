@@ -157,8 +157,8 @@ function pathBuilder {
     $uriArray = $_path.Split("/")
     $gitOwner = $uriArray[3]
     $gitRepo = $uriArray[4]
-    $gitPath = $uriArray[7]
-    $solution = $uriArray[8]
+    $gitPath = $uriArray[-2]
+    $solution = $uriArray[-1]
 
     $apiUri = "https://api.github.com/repos/$gitOwner/$gitRepo/contents/$gitPath/$solution"
 
